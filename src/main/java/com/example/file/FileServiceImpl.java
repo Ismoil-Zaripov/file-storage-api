@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 
 @Service
@@ -39,6 +40,15 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public byte[] downloadImageFromSystem(String fileName) {
-        return new byte[0];
+        var file = fileRepository.findByName(fileName);
+
+        byte[] bytes;
+        try {
+            bytes = Files.readAllBytes(new File(file.getPath()).toPath());
+        } catch (IOException e) {
+            return null;
+        }
+
+        return bytes;
     }
 }
